@@ -35,3 +35,14 @@ TITLE_PRINCIPALS_SCHEMA = StructType([
     StructField("job", StringType(), True),
     StructField("characters", StringType(), True),
 ])
+
+TITLE_AKAS_SCHEMA = StructType([
+    StructField("titleId", StringType(), True),
+    StructField("ordering", IntegerType(), True),
+    StructField("title", StringType(), True),
+    StructField("region", StringType(), True),
+    StructField("language", StringType(), True),
+    StructField("types", StringType(), True),
+    StructField("attributes", StringType(), True),
+    StructField("isOriginalTitle", IntegerType(), True),
+])
