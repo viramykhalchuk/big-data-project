@@ -1,15 +1,64 @@
+import io
+import shutil
+from contextlib import redirect_stdout
+from pathlib import Path
+
 from pyspark.sql import functions as F
 from pyspark.sql.window import Window
 
 
-def print_question_result(number, question, result_df, rows=10):
+def save_result_as_single_csv(result_df, output_dir, file_name):
+    output_dir = Path(output_dir)
+    temp_dir = output_dir / f"{file_name}_temp"
+    final_file = output_dir / f"{file_name}.csv"
+
+    if temp_dir.exists():
+        shutil.rmtree(temp_dir)
+
+    if final_file.exists():
+        final_file.unlink()
+
+    result_df.coalesce(1).write.mode("overwrite").option("header", True).csv(str(temp_dir))
+
+    part_files = list(temp_dir.glob("part-*.csv"))
+    if part_files:
+        part_files[0].rename(final_file)
+
+    shutil.rmtree(temp_dir)
+
+
+def save_execution_plan(result_df, output_dir, file_name):
+    output_dir = Path(output_dir)
+    plan_file = output_dir / f"{file_name}_execution_plan.txt"
+
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        result_df.explain(mode="formatted")
+
+    plan_file.write_text(buffer.getvalue(), encoding="utf-8")
+
+
+def print_and_save_question_result(number, question, result_df, output_dir, rows=10):
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    file_prefix = f"question_{number:02d}"
+
     print("\n" + "=" * 120)
     print(f"BUSINESS QUESTION {number}")
     print(question)
     print("=" * 120)
+
     result_df.show(rows, truncate=False)
+
     print(f"\nEXECUTION PLAN FOR BUSINESS QUESTION {number}")
     result_df.explain(mode="formatted")
+
+    save_result_as_single_csv(result_df, output_dir, f"{file_prefix}_result")
+    save_execution_plan(result_df, output_dir, file_prefix)
+
+    print(f"\nSaved result: {output_dir / f'{file_prefix}_result.csv'}")
+    print(f"Saved execution plan: {output_dir / f'{file_prefix}_execution_plan.txt'}")
 
 
 def get_movies_with_ratings(title_basics_df, title_ratings_df, min_votes):
@@ -92,7 +141,7 @@ def question_3_best_movie_by_decade(title_basics_df, title_ratings_df):
             "numVotes",
             "rank_in_decade"
         )
-        .orderBy("decade_start")
+        .orderBy("decade")
     )
 
 
@@ -152,13 +201,12 @@ def question_6_ukrainian_localized_movies(title_basics_df, title_ratings_df, tit
     ukrainian_titles = (
         title_akas_df
         .filter((F.col("region") == "UA") | (F.lower(F.col("language")) == "uk"))
-        .select(
-            F.col("titleId").alias("tconst"),
-            F.col("title").alias("localizedTitle"),
-            "region",
-            "language"
+        .groupBy(F.col("titleId").alias("tconst"))
+        .agg(
+            F.first("title", ignorenulls=True).alias("localizedTitle"),
+            F.first("region", ignorenulls=True).alias("region"),
+            F.first("language", ignorenulls=True).alias("language")
         )
-        .dropDuplicates(["tconst", "localizedTitle"])
     )
 
     return (
@@ -187,51 +235,57 @@ def question_6_ukrainian_localized_movies(title_basics_df, title_ratings_df, tit
     )
 
 
-def run_business_questions(title_basics_df, title_ratings_df, title_akas_df):
+def run_business_questions(title_basics_df, title_ratings_df, title_akas_df, output_dir):
     q1 = question_1_top_movies_after_2000(title_basics_df, title_ratings_df)
-    print_question_result(
+    print_and_save_question_result(
         1,
         "What are the top 10 highest-rated non-adult movies released after 2000 with at least 100000 votes?",
         q1,
+        output_dir,
         10
     )
 
     q2 = question_2_best_genres(title_basics_df, title_ratings_df)
-    print_question_result(
+    print_and_save_question_result(
         2,
         "Which movie genres have the highest average rating among movies with at least 10000 votes?",
         q2,
+        output_dir,
         10
     )
 
     q3 = question_3_best_movie_by_decade(title_basics_df, title_ratings_df)
-    print_question_result(
+    print_and_save_question_result(
         3,
         "What is the best-rated movie in each decade from 1950 to 2020s?",
         q3,
+        output_dir,
         20
     )
 
     q4 = question_4_top_movies_by_genre_after_2010(title_basics_df, title_ratings_df)
-    print_question_result(
+    print_and_save_question_result(
         4,
         "What are the top 3 highest-rated movies in each genre after 2010?",
         q4,
-        40
+        output_dir,
+        50
     )
 
     q5 = question_5_title_type_summary(title_basics_df, title_ratings_df)
-    print_question_result(
+    print_and_save_question_result(
         5,
         "How do different title types compare by count, average rating, average votes and average runtime after 2000?",
         q5,
+        output_dir,
         20
     )
 
     q6 = question_6_ukrainian_localized_movies(title_basics_df, title_ratings_df, title_akas_df)
-    print_question_result(
+    print_and_save_question_result(
         6,
         "What are the top-rated movies that have Ukrainian region or Ukrainian language localization?",
         q6,
+        output_dir,
         10
     )

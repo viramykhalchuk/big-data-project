@@ -45,7 +45,8 @@ print(f"title_ratings_clean rows: {title_ratings_clean.count()}")
 
 print("\nRUNNING BUSINESS QUESTIONS")
 
-run_business_questions(title_basics_clean, title_ratings_clean, title_akas_raw)
+output_dir = project_dir / "outputs" / "transformation_results"
+run_business_questions(title_basics_clean, title_ratings_clean, title_akas_raw, output_dir)
 
 title_basics_clean.unpersist()
 title_ratings_clean.unpersist()
