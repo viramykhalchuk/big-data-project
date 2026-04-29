@@ -1,0 +1,65 @@
+genre,rank_in_genre,primaryTitle,startYear,averageRating,numVotes
+Action,1,Attack on Titan the Movie: The Last Attack,2024,9.2,25185
+Action,2,Inception,2010,8.8,2794426
+Action,3,Spider-Man: Across the Spider-Verse,2023,8.5,512628
+Adventure,1,Attack on Titan the Movie: The Last Attack,2024,9.2,25185
+Adventure,2,Inception,2010,8.8,2794426
+Adventure,3,Interstellar,2014,8.7,2493087
+Animation,1,Attack on Titan the Movie: The Last Attack,2024,9.2,25185
+Animation,2,Spider-Man: Across the Spider-Verse,2023,8.5,512628
+Animation,3,Mahavatar Narsimha,2024,8.5,45653
+Biography,1,12th Fail,2023,8.7,168624
+Biography,2,Rocketry: The Nambi Effect,2022,8.6,61922
+Biography,3,Senna,2010,8.4,83588
+Comedy,1,777 Charlie,2022,8.7,47123
+Comedy,2,The Intouchables,2011,8.5,1019900
+Comedy,3,Toy Story 3,2010,8.3,963670
+Crime,1,Mirror Game,2016,8.9,30918
+Crime,2,Jai Bhim,2021,8.6,233330
+Crime,3,The Dark Knight Rises,2012,8.4,1980856
+Documentary,1,20 Days in Mariupol,2023,8.6,43462
+Documentary,2,Senna,2010,8.4,83588
+Documentary,3,Samsara,2011,8.4,39794
+Drama,1,Interstellar,2014,8.7,2493087
+Drama,2,12th Fail,2023,8.7,168624
+Drama,3,777 Charlie,2022,8.7,47123
+Family,1,Hi Nanna,2023,8.3,25880
+Family,2,The Wild Robot,2024,8.2,216706
+Family,3,Harry Potter and the Deathly Hallows: Part 2,2011,8.1,1038213
+Fantasy,1,Your Name.,2016,8.4,386780
+Fantasy,2,Demon Slayer: Kimetsu no Yaiba - Tsuzumi Mansion Arc,2021,8.4,35790
+Fantasy,3,Tumbbad,2018,8.2,73965
+History,1,The Salt of the Earth,2014,8.4,25211
+History,2,Hamilton,2020,8.3,137793
+History,3,Sardar Udham,2021,8.3,50464
+Horror,1,Tumbbad,2018,8.2,73965
+Horror,2,The Blue Elephant,2014,8.0,30971
+Horror,3,Get Out,2017,7.8,808877
+Music,1,Whiplash,2014,8.5,1142105
+Music,2,Samsara,2011,8.4,39794
+Music,3,Searching for Sugar Man,2012,8.2,76057
+Musical,1,Sita Ramam,2022,8.5,82953
+Musical,2,Zindagi Na Milegi Dobara,2011,8.2,95093
+Musical,3,PK,2014,8.1,221166
+Mystery,1,Mirror Game,2016,8.9,30918
+Mystery,2,Drishyam,2013,8.4,47776
+Mystery,3,Drishyam 2,2021,8.4,44513
+News,1,Before the Flood,2016,8.2,29611
+Romance,1,96,2018,8.5,44624
+Romance,2,Dil Bechara,2020,8.3,137430
+Romance,3,Chhichhore,2019,8.3,71981
+Sci-Fi,1,Inception,2010,8.8,2794426
+Sci-Fi,2,Interstellar,2014,8.7,2493087
+Sci-Fi,3,Avengers: Endgame,2019,8.4,1430882
+Sport,1,Sarpatta Parambarai,2021,8.5,28437
+Sport,2,Jersey,2019,8.5,27935
+Sport,3,Senna,2010,8.4,83588
+Thriller,1,Mirror Game,2016,8.9,30918
+Thriller,2,Parasite,2019,8.5,1149200
+Thriller,3,Kaithi,2019,8.4,51232
+War,1,20 Days in Mariupol,2023,8.6,43462
+War,2,Incendies,2010,8.3,247294
+War,3,1917,2019,8.2,764504
+Western,1,Django Unchained,2012,8.5,1868817
+Western,2,The Revenant,2015,8.0,943138
+Western,3,True Grit,2010,7.6,375041

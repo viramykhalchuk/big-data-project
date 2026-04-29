@@ -1,0 +1,272 @@
+== Physical Plan ==
+AdaptiveSparkPlan (40)
++- TakeOrderedAndProject (39)
+   +- Filter (38)
+      +- HashAggregate (37)
+         +- Exchange (36)
+            +- HashAggregate (35)
+               +- Filter (34)
+                  +- Generate (33)
+                     +- Project (32)
+                        +- SortMergeJoin Inner (31)
+                           :- Project (17)
+                           :  +- Filter (16)
+                           :     +- InMemoryTableScan (1)
+                           :           +- InMemoryRelation (2)
+                           :                 +- AdaptiveSparkPlan (15)
+                                                +- == Final Plan ==
+                                                   SortAggregate (9)
+                                                   +- * Sort (8)
+                                                      +- ShuffleQueryStage (7), Statistics(sizeInBytes=2.5 GiB, rowCount=1.24E+7)
+                                                         +- Exchange (6)
+                                                            +- SortAggregate (5)
+                                                               +- * Sort (4)
+                                                                  +- Scan csv  (3)
+                                                +- == Initial Plan ==
+                                                   SortAggregate (14)
+                                                   +- Sort (13)
+                                                      +- Exchange (12)
+                                                         +- SortAggregate (11)
+                                                            +- Sort (10)
+                                                               +- Scan csv  (3)
+                           +- Sort (30)
+                              +- Filter (29)
+                                 +- InMemoryTableScan (18)
+                                       +- InMemoryRelation (19)
+                                             +- AdaptiveSparkPlan (28)
+                                                +- == Final Plan ==
+                                                   * HashAggregate (24)
+                                                   +- ShuffleQueryStage (23), Statistics(sizeInBytes=100.5 MiB, rowCount=1.65E+6)
+                                                      +- Exchange (22)
+                                                         +- * HashAggregate (21)
+                                                            +- Scan csv  (20)
+                                                +- == Initial Plan ==
+                                                   HashAggregate (27)
+                                                   +- Exchange (26)
+                                                      +- HashAggregate (25)
+                                                         +- Scan csv  (20)
+
+
+(1) InMemoryTableScan
+Output [6]: [genres#57, isAdult#4, runtimeMinutes#7, startYear#5, tconst#0, titleType#1]
+Arguments: [genres#57, isAdult#4, runtimeMinutes#7, startYear#5, tconst#0, titleType#1], [isnotnull(titleType#1), isnotnull(isAdult#4), (titleType#1 = movie), (isAdult#4 = 0), isnotnull(startYear#5), isnotnull(tconst#0)]
+
+(2) InMemoryRelation
+Arguments: [tconst#0, titleType#1, primaryTitle#2, originalTitle#3, isAdult#4, startYear#5, runtimeMinutes#7, genres#57], CachedRDDBuilder(org.apache.spark.sql.execution.columnar.DefaultCachedBatchSerializer@715ace24,StorageLevel(disk, memory, 1 replicas),AdaptiveSparkPlan isFinalPlan=true
++- == Final Plan ==
+   SortAggregate(key=[tconst#0], functions=[first(titleType#1, false), first(primaryTitle#2, false), first(originalTitle#3, false), first(isAdult#4, false), first(startYear#5, false), first(runtimeMinutes#7, false), first(genres#8, false)], output=[tconst#0, titleType#67, primaryTitle#69, originalTitle#71, isAdult#73, startYear#75, runtimeMinutes#79, genres#57])
+   +- *(2) Sort [tconst#0 ASC NULLS FIRST], false, 0
+      +- ShuffleQueryStage 0
+         +- Exchange hashpartitioning(tconst#0, 8), ENSURE_REQUIREMENTS, [plan_id=62]
+            +- SortAggregate(key=[tconst#0], functions=[partial_first(titleType#1, false), partial_first(primaryTitle#2, false), partial_first(originalTitle#3, false), partial_first(isAdult#4, false), partial_first(startYear#5, false), partial_first(runtimeMinutes#7, false), partial_first(genres#8, false)], output=[tconst#0, first#96, valueSet#97, first#98, valueSet#99, first#100, valueSet#101, first#102, valueSet#103, first#104, valueSet#105, first#106, valueSet#107, first#108, valueSet#109])
+               +- *(1) Sort [tconst#0 ASC NULLS FIRST], false, 0
+                  +- FileScan csv [tconst#0,titleType#1,primaryTitle#2,originalTitle#3,isAdult#4,startYear#5,runtimeMinutes#7,genres#8] Batched: false, DataFilters: [], Format: CSV, Location: InMemoryFileIndex(1 paths)[file:/Users/vira/Desktop/3курс/ввд/data/imdb/title.basics.tsv.gz], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<tconst:string,titleType:string,primaryTitle:string,originalTitle:string,isAdult:int,startY...
++- == Initial Plan ==
+   SortAggregate(key=[tconst#0], functions=[first(titleType#1, false), first(primaryTitle#2, false), first(originalTitle#3, false), first(isAdult#4, false), first(startYear#5, false), first(runtimeMinutes#7, false), first(genres#8, false)], output=[tconst#0, titleType#67, primaryTitle#69, originalTitle#71, isAdult#73, startYear#75, runtimeMinutes#79, genres#57])
+   +- Sort [tconst#0 ASC NULLS FIRST], false, 0
+      +- Exchange hashpartitioning(tconst#0, 8), ENSURE_REQUIREMENTS, [plan_id=14]
+         +- SortAggregate(key=[tconst#0], functions=[partial_first(titleType#1, false), partial_first(primaryTitle#2, false), partial_first(originalTitle#3, false), partial_first(isAdult#4, false), partial_first(startYear#5, false), partial_first(runtimeMinutes#7, false), partial_first(genres#8, false)], output=[tconst#0, first#96, valueSet#97, first#98, valueSet#99, first#100, valueSet#101, first#102, valueSet#103, first#104, valueSet#105, first#106, valueSet#107, first#108, valueSet#109])
+            +- Sort [tconst#0 ASC NULLS FIRST], false, 0
+               +- FileScan csv [tconst#0,titleType#1,primaryTitle#2,originalTitle#3,isAdult#4,startYear#5,runtimeMinutes#7,genres#8] Batched: false, DataFilters: [], Format: CSV, Location: InMemoryFileIndex(1 paths)[file:/Users/vira/Desktop/3курс/ввд/data/imdb/title.basics.tsv.gz], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<tconst:string,titleType:string,primaryTitle:string,originalTitle:string,isAdult:int,startY...
+,None)
+
+(3) Scan csv 
+Output [8]: [tconst#0, titleType#1, primaryTitle#2, originalTitle#3, isAdult#4, startYear#5, runtimeMinutes#7, genres#8]
+Batched: false
+Location: InMemoryFileIndex [file:/Users/vira/Desktop/3курс/ввд/data/imdb/title.basics.tsv.gz]
+ReadSchema: struct<tconst:string,titleType:string,primaryTitle:string,originalTitle:string,isAdult:int,startYear:int,runtimeMinutes:int,genres:string>
+
+(4) Sort [codegen id : 1]
+Input [8]: [tconst#0, titleType#1, primaryTitle#2, originalTitle#3, isAdult#4, startYear#5, runtimeMinutes#7, genres#8]
+Arguments: [tconst#0 ASC NULLS FIRST], false, 0
+
+(5) SortAggregate
+Input [8]: [tconst#0, titleType#1, primaryTitle#2, originalTitle#3, isAdult#4, startYear#5, runtimeMinutes#7, genres#8]
+Keys [1]: [tconst#0]
+Functions [7]: [partial_first(titleType#1, false), partial_first(primaryTitle#2, false), partial_first(originalTitle#3, false), partial_first(isAdult#4, false), partial_first(startYear#5, false), partial_first(runtimeMinutes#7, false), partial_first(genres#8, false)]
+Aggregate Attributes [14]: [first#82, valueSet#83, first#84, valueSet#85, first#86, valueSet#87, first#88, valueSet#89, first#90, valueSet#91, first#92, valueSet#93, first#94, valueSet#95]
+Results [15]: [tconst#0, first#96, valueSet#97, first#98, valueSet#99, first#100, valueSet#101, first#102, valueSet#103, first#104, valueSet#105, first#106, valueSet#107, first#108, valueSet#109]
+
+(6) Exchange
+Input [15]: [tconst#0, first#96, valueSet#97, first#98, valueSet#99, first#100, valueSet#101, first#102, valueSet#103, first#104, valueSet#105, first#106, valueSet#107, first#108, valueSet#109]
+Arguments: hashpartitioning(tconst#0, 8), ENSURE_REQUIREMENTS, [plan_id=62]
+
+(7) ShuffleQueryStage
+Output [15]: [tconst#0, first#96, valueSet#97, first#98, valueSet#99, first#100, valueSet#101, first#102, valueSet#103, first#104, valueSet#105, first#106, valueSet#107, first#108, valueSet#109]
+Arguments: 0
+
+(8) Sort [codegen id : 2]
+Input [15]: [tconst#0, first#96, valueSet#97, first#98, valueSet#99, first#100, valueSet#101, first#102, valueSet#103, first#104, valueSet#105, first#106, valueSet#107, first#108, valueSet#109]
+Arguments: [tconst#0 ASC NULLS FIRST], false, 0
+
+(9) SortAggregate
+Input [15]: [tconst#0, first#96, valueSet#97, first#98, valueSet#99, first#100, valueSet#101, first#102, valueSet#103, first#104, valueSet#105, first#106, valueSet#107, first#108, valueSet#109]
+Keys [1]: [tconst#0]
+Functions [7]: [first(titleType#1, false), first(primaryTitle#2, false), first(originalTitle#3, false), first(isAdult#4, false), first(startYear#5, false), first(runtimeMinutes#7, false), first(genres#8, false)]
+Aggregate Attributes [7]: [first(titleType#1)()#66, first(primaryTitle#2)()#68, first(originalTitle#3)()#70, first(isAdult#4)()#72, first(startYear#5)()#74, first(runtimeMinutes#7)()#78, first(genres#8)()#80]
+Results [8]: [tconst#0, first(titleType#1)()#66 AS titleType#67, first(primaryTitle#2)()#68 AS primaryTitle#69, first(originalTitle#3)()#70 AS originalTitle#71, first(isAdult#4)()#72 AS isAdult#73, first(startYear#5)()#74 AS startYear#75, first(runtimeMinutes#7)()#78 AS runtimeMinutes#79, coalesce(first(genres#8)()#80, Unknown) AS genres#57]
+
+(10) Sort
+Input [8]: [tconst#0, titleType#1, primaryTitle#2, originalTitle#3, isAdult#4, startYear#5, runtimeMinutes#7, genres#8]
+Arguments: [tconst#0 ASC NULLS FIRST], false, 0
+
+(11) SortAggregate
+Input [8]: [tconst#0, titleType#1, primaryTitle#2, originalTitle#3, isAdult#4, startYear#5, runtimeMinutes#7, genres#8]
+Keys [1]: [tconst#0]
+Functions [7]: [partial_first(titleType#1, false), partial_first(primaryTitle#2, false), partial_first(originalTitle#3, false), partial_first(isAdult#4, false), partial_first(startYear#5, false), partial_first(runtimeMinutes#7, false), partial_first(genres#8, false)]
+Aggregate Attributes [14]: [first#82, valueSet#83, first#84, valueSet#85, first#86, valueSet#87, first#88, valueSet#89, first#90, valueSet#91, first#92, valueSet#93, first#94, valueSet#95]
+Results [15]: [tconst#0, first#96, valueSet#97, first#98, valueSet#99, first#100, valueSet#101, first#102, valueSet#103, first#104, valueSet#105, first#106, valueSet#107, first#108, valueSet#109]
+
+(12) Exchange
+Input [15]: [tconst#0, first#96, valueSet#97, first#98, valueSet#99, first#100, valueSet#101, first#102, valueSet#103, first#104, valueSet#105, first#106, valueSet#107, first#108, valueSet#109]
+Arguments: hashpartitioning(tconst#0, 8), ENSURE_REQUIREMENTS, [plan_id=14]
+
+(13) Sort
+Input [15]: [tconst#0, first#96, valueSet#97, first#98, valueSet#99, first#100, valueSet#101, first#102, valueSet#103, first#104, valueSet#105, first#106, valueSet#107, first#108, valueSet#109]
+Arguments: [tconst#0 ASC NULLS FIRST], false, 0
+
+(14) SortAggregate
+Input [15]: [tconst#0, first#96, valueSet#97, first#98, valueSet#99, first#100, valueSet#101, first#102, valueSet#103, first#104, valueSet#105, first#106, valueSet#107, first#108, valueSet#109]
+Keys [1]: [tconst#0]
+Functions [7]: [first(titleType#1, false), first(primaryTitle#2, false), first(originalTitle#3, false), first(isAdult#4, false), first(startYear#5, false), first(runtimeMinutes#7, false), first(genres#8, false)]
+Aggregate Attributes [7]: [first(titleType#1)()#66, first(primaryTitle#2)()#68, first(originalTitle#3)()#70, first(isAdult#4)()#72, first(startYear#5)()#74, first(runtimeMinutes#7)()#78, first(genres#8)()#80]
+Results [8]: [tconst#0, first(titleType#1)()#66 AS titleType#67, first(primaryTitle#2)()#68 AS primaryTitle#69, first(originalTitle#3)()#70 AS originalTitle#71, first(isAdult#4)()#72 AS isAdult#73, first(startYear#5)()#74 AS startYear#75, first(runtimeMinutes#7)()#78 AS runtimeMinutes#79, coalesce(first(genres#8)()#80, Unknown) AS genres#57]
+
+(15) AdaptiveSparkPlan
+Output [8]: [tconst#0, titleType#67, primaryTitle#69, originalTitle#71, isAdult#73, startYear#75, runtimeMinutes#79, genres#57]
+Arguments: isFinalPlan=true
+
+(16) Filter
+Input [6]: [genres#57, isAdult#4, runtimeMinutes#7, startYear#5, tconst#0, titleType#1]
+Condition : (((((isnotnull(titleType#1) AND isnotnull(isAdult#4)) AND (titleType#1 = movie)) AND (isAdult#4 = 0)) AND isnotnull(startYear#5)) AND isnotnull(tconst#0))
+
+(17) Project
+Output [3]: [tconst#0, runtimeMinutes#7, genres#57]
+Input [6]: [genres#57, isAdult#4, runtimeMinutes#7, startYear#5, tconst#0, titleType#1]
+
+(18) InMemoryTableScan
+Output [3]: [tconst#18, averageRating#19, numVotes#20]
+Arguments: [tconst#18, averageRating#19, numVotes#20], [isnotnull(averageRating#19), isnotnull(numVotes#20), (numVotes#20 >= 10000), isnotnull(tconst#18)]
+
+(19) InMemoryRelation
+Arguments: [tconst#18, averageRating#19, numVotes#20], CachedRDDBuilder(org.apache.spark.sql.execution.columnar.DefaultCachedBatchSerializer@715ace24,StorageLevel(disk, memory, 1 replicas),AdaptiveSparkPlan isFinalPlan=true
++- == Final Plan ==
+   *(2) HashAggregate(keys=[tconst#18], functions=[first(averageRating#19, false), first(numVotes#20, false)], output=[tconst#18, averageRating#152, numVotes#154])
+   +- ShuffleQueryStage 0
+      +- Exchange hashpartitioning(tconst#18, 8), ENSURE_REQUIREMENTS, [plan_id=133]
+         +- *(1) HashAggregate(keys=[tconst#18], functions=[partial_first(averageRating#19, false), partial_first(numVotes#20, false)], output=[tconst#18, first#159, valueSet#160, first#161, valueSet#162])
+            +- FileScan csv [tconst#18,averageRating#19,numVotes#20] Batched: false, DataFilters: [], Format: CSV, Location: InMemoryFileIndex(1 paths)[file:/Users/vira/Desktop/3курс/ввд/data/imdb/title.ratings.tsv.gz], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<tconst:string,averageRating:double,numVotes:int>
++- == Initial Plan ==
+   HashAggregate(keys=[tconst#18], functions=[first(averageRating#19, false), first(numVotes#20, false)], output=[tconst#18, averageRating#152, numVotes#154])
+   +- Exchange hashpartitioning(tconst#18, 8), ENSURE_REQUIREMENTS, [plan_id=28]
+      +- HashAggregate(keys=[tconst#18], functions=[partial_first(averageRating#19, false), partial_first(numVotes#20, false)], output=[tconst#18, first#159, valueSet#160, first#161, valueSet#162])
+         +- FileScan csv [tconst#18,averageRating#19,numVotes#20] Batched: false, DataFilters: [], Format: CSV, Location: InMemoryFileIndex(1 paths)[file:/Users/vira/Desktop/3курс/ввд/data/imdb/title.ratings.tsv.gz], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<tconst:string,averageRating:double,numVotes:int>
+,None)
+
+(20) Scan csv 
+Output [3]: [tconst#18, averageRating#19, numVotes#20]
+Batched: false
+Location: InMemoryFileIndex [file:/Users/vira/Desktop/3курс/ввд/data/imdb/title.ratings.tsv.gz]
+ReadSchema: struct<tconst:string,averageRating:double,numVotes:int>
+
+(21) HashAggregate [codegen id : 1]
+Input [3]: [tconst#18, averageRating#19, numVotes#20]
+Keys [1]: [tconst#18]
+Functions [2]: [partial_first(averageRating#19, false), partial_first(numVotes#20, false)]
+Aggregate Attributes [4]: [first#155, valueSet#156, first#157, valueSet#158]
+Results [5]: [tconst#18, first#159, valueSet#160, first#161, valueSet#162]
+
+(22) Exchange
+Input [5]: [tconst#18, first#159, valueSet#160, first#161, valueSet#162]
+Arguments: hashpartitioning(tconst#18, 8), ENSURE_REQUIREMENTS, [plan_id=133]
+
+(23) ShuffleQueryStage
+Output [5]: [tconst#18, first#159, valueSet#160, first#161, valueSet#162]
+Arguments: 0
+
+(24) HashAggregate [codegen id : 2]
+Input [5]: [tconst#18, first#159, valueSet#160, first#161, valueSet#162]
+Keys [1]: [tconst#18]
+Functions [2]: [first(averageRating#19, false), first(numVotes#20, false)]
+Aggregate Attributes [2]: [first(averageRating#19)()#151, first(numVotes#20)()#153]
+Results [3]: [tconst#18, first(averageRating#19)()#151 AS averageRating#152, first(numVotes#20)()#153 AS numVotes#154]
+
+(25) HashAggregate
+Input [3]: [tconst#18, averageRating#19, numVotes#20]
+Keys [1]: [tconst#18]
+Functions [2]: [partial_first(averageRating#19, false), partial_first(numVotes#20, false)]
+Aggregate Attributes [4]: [first#155, valueSet#156, first#157, valueSet#158]
+Results [5]: [tconst#18, first#159, valueSet#160, first#161, valueSet#162]
+
+(26) Exchange
+Input [5]: [tconst#18, first#159, valueSet#160, first#161, valueSet#162]
+Arguments: hashpartitioning(tconst#18, 8), ENSURE_REQUIREMENTS, [plan_id=28]
+
+(27) HashAggregate
+Input [5]: [tconst#18, first#159, valueSet#160, first#161, valueSet#162]
+Keys [1]: [tconst#18]
+Functions [2]: [first(averageRating#19, false), first(numVotes#20, false)]
+Aggregate Attributes [2]: [first(averageRating#19)()#151, first(numVotes#20)()#153]
+Results [3]: [tconst#18, first(averageRating#19)()#151 AS averageRating#152, first(numVotes#20)()#153 AS numVotes#154]
+
+(28) AdaptiveSparkPlan
+Output [3]: [tconst#18, averageRating#152, numVotes#154]
+Arguments: isFinalPlan=true
+
+(29) Filter
+Input [3]: [tconst#18, averageRating#19, numVotes#20]
+Condition : (((isnotnull(averageRating#19) AND isnotnull(numVotes#20)) AND (numVotes#20 >= 10000)) AND isnotnull(tconst#18))
+
+(30) Sort
+Input [3]: [tconst#18, averageRating#19, numVotes#20]
+Arguments: [tconst#18 ASC NULLS FIRST], false, 0
+
+(31) SortMergeJoin
+Left keys [1]: [tconst#0]
+Right keys [1]: [tconst#18]
+Join type: Inner
+Join condition: None
+
+(32) Project
+Output [4]: [runtimeMinutes#7, genres#57, averageRating#19, numVotes#20]
+Input [6]: [tconst#0, runtimeMinutes#7, genres#57, tconst#18, averageRating#19, numVotes#20]
+
+(33) Generate
+Input [4]: [runtimeMinutes#7, genres#57, averageRating#19, numVotes#20]
+Arguments: explode(split(genres#57, ,, -1)), [runtimeMinutes#7, averageRating#19, numVotes#20], false, [genre#1194]
+
+(34) Filter
+Input [4]: [runtimeMinutes#7, averageRating#19, numVotes#20, genre#1194]
+Condition : NOT (genre#1194 = Unknown)
+
+(35) HashAggregate
+Input [4]: [runtimeMinutes#7, averageRating#19, numVotes#20, genre#1194]
+Keys [1]: [genre#1194]
+Functions [4]: [partial_count(1), partial_avg(averageRating#19), partial_sum(numVotes#20), partial_avg(runtimeMinutes#7)]
+Aggregate Attributes [6]: [count#1406L, sum#1407, count#1408L, sum#1409L, sum#1410, count#1411L]
+Results [7]: [genre#1194, count#1412L, sum#1413, count#1414L, sum#1415L, sum#1416, count#1417L]
+
+(36) Exchange
+Input [7]: [genre#1194, count#1412L, sum#1413, count#1414L, sum#1415L, sum#1416, count#1417L]
+Arguments: hashpartitioning(genre#1194, 8), ENSURE_REQUIREMENTS, [plan_id=638]
+
+(37) HashAggregate
+Input [7]: [genre#1194, count#1412L, sum#1413, count#1414L, sum#1415L, sum#1416, count#1417L]
+Keys [1]: [genre#1194]
+Functions [4]: [count(1), avg(averageRating#19), sum(numVotes#20), avg(runtimeMinutes#7)]
+Aggregate Attributes [4]: [count(1)#1213L, avg(averageRating#19)#1215, sum(numVotes#20)#1217L, avg(runtimeMinutes#7)#1219]
+Results [5]: [genre#1194, count(1)#1213L AS movie_count#1214L, round(avg(averageRating#19)#1215, 3) AS avg_rating#1216, sum(numVotes#20)#1217L AS total_votes#1218L, round(avg(runtimeMinutes#7)#1219, 2) AS avg_runtime#1220]
+
+(38) Filter
+Input [5]: [genre#1194, movie_count#1214L, avg_rating#1216, total_votes#1218L, avg_runtime#1220]
+Condition : (movie_count#1214L >= 1000)
+
+(39) TakeOrderedAndProject
+Input [5]: [genre#1194, movie_count#1214L, avg_rating#1216, total_votes#1218L, avg_runtime#1220]
+Arguments: 10, [avg_rating#1216 DESC NULLS LAST, total_votes#1218L DESC NULLS LAST], [genre#1194, movie_count#1214L, avg_rating#1216, total_votes#1218L, avg_runtime#1220]
+
+(40) AdaptiveSparkPlan
+Output [5]: [genre#1194, movie_count#1214L, avg_rating#1216, total_votes#1218L, avg_runtime#1220]
+Arguments: isFinalPlan=false
+
+
